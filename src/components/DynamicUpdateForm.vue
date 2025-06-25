@@ -2,7 +2,7 @@
   <div class="p-4">
     <LoadingComponent v-if="loading" />
     <div v-else>
-      <h1 class="text-2xl font-bold mb-4">{{ tableInfo.display_name || "Form" }} Oluştur</h1>
+      <h1 class="text-2xl font-bold mb-4">{{ tableInfo.display_name || "Form" }} Düzenle</h1>
       <form @submit.prevent="handleSubmit">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div v-for="(col, index) in columns" :key="index">
