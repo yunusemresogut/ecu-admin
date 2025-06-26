@@ -56,6 +56,7 @@ const tabs = ref([
     tableInfo: {
       tableName: "kayitlar",
       create: "kayitlar",
+      update: "kayitlar",
       display_name: "Tüm Kayıtlar",
     },
   },
@@ -67,6 +68,7 @@ const tabs = ref([
     tableInfo: {
       tableName: "kayitlar",
       create: "kayitlar",
+      update: "kayitlar",
       display_name: "İşlemdeki Kayıtlar",
     },
     filters: {
@@ -85,6 +87,7 @@ const tabs = ref([
     tableInfo: {
       tableName: "kayitlar",
       create: "kayitlar",
+      update: "kayitlar",
       display_name: "Onay Bekleyen Kayıtlar",
     },
     filters: {

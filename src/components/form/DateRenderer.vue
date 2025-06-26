@@ -48,18 +48,14 @@ function displayToIso(display) {
 function onInput(e) {
   let val = e.target.value
 
-  // Sadece rakam ve nokta kalacak
   val = val.replace(/[^\d.]/g, '')
 
-  // Noktaları doğru konuma otomatik ekle
   if (val.length > 2 && val[2] !== '.') val = val.slice(0, 2) + '.' + val.slice(2)
   if (val.length > 5 && val[5] !== '.') val = val.slice(0, 5) + '.' + val.slice(5)
   if (val.length > 10) val = val.slice(0, 10)
 
-  // Bölümleri al
   const parts = val.split('.')
 
-  // Gün kontrolü
   if (parts[0]) {
     let d = parts[0].replace(/\D/g, '')
     if (d.length === 1) {
@@ -72,7 +68,6 @@ function onInput(e) {
     parts[0] = d
   }
 
-  // Ay kontrolü
   if (parts[1]) {
     let m = parts[1].replace(/\D/g, '')
     if (m.length === 1) {
@@ -85,18 +80,15 @@ function onInput(e) {
     parts[1] = m
   }
 
-  // Yıl kontrol
   if (parts[2]) {
     let y = parts[2].replace(/\D/g, '')
     if (y.length > 4) y = y.slice(0, 4)
     parts[2] = y
   }
 
-  // Birleştir ve göster
   let newVal = parts.filter(Boolean).join('.')
   displayValue.value = newVal
 
-  // Model güncelle
   if (
     parts.length === 3 &&
     parts[0].length === 2 &&
@@ -108,7 +100,6 @@ function onInput(e) {
     emit('update:modelValue', '')
   }
 
-  // İmleci uygun yere taşı (noktalardan sonra 1 sağa)
   nextTick(() => {
     const input = inputRef.value
     if (!input) return

@@ -15,152 +15,206 @@ const routes = [
       {
         path: '/kayitlar',
         name: 'Kayıtlar',
-        component: () => import('../pages/kayitlar/Kayitlar.vue'),
+        component: () => import('../pages/kayitlar/index.vue'),
         meta: { requiresAuth: true }
       },
       {
-        path: '/kayitlar/yeni-kayit',
-        name: 'Yeni Kayıt',
-        component: () => import('../pages/kayitlar/KayitEkle.vue'),
+        path: '/kayitlar/yeni-olustur',
+        name: 'Kayıt Oluştur',
+        component: () => import('../pages/kayitlar/Create.vue'),
+        meta: { requiresAuth: true }
+      },
+      {
+        path: '/kayitlar/duzenle/:id',
+        name: 'Kayıt Düzenle',
+        component: () => import('../pages/kayitlar/Update.vue'),
         meta: { requiresAuth: true }
       },
       {
         path: '/bayiler',
         name: 'Bayiler',
-        component: () => import('../pages/bayiler/Bayiler.vue'),
+        component: () => import('../pages/bayiler/index.vue'),
         meta: { requiresAuth: true }
       },
       {
         path: '/bayiler/yeni-olustur',
-        name: 'BayilerCreate',
-        component: () => import('../pages/bayiler/BayilerCreate.vue'),
+        name: 'Bayi Oluştur',
+        component: () => import('../pages/bayiler/Create.vue'),
         meta: { requiresAuth: true }
       },
       {
         path: '/bayiler/duzenle/:id',
-        name: 'BayilerEdit',
-        component: () => import('../pages/bayiler/BayilerUpdate.vue'),
+        name: 'Bayi Düzenle',
+        component: () => import('../pages/bayiler/Update.vue'),
         meta: { requiresAuth: true }
       },
       {
         path: '/arac-marka-modeli',
-        name: 'AracMarkaModel',
-        component: () => import('../pages/arac-marka-modeli/AracMarkaModel.vue'),
+        name: 'Araç Marka Modeli',
+        component: () => import('../pages/arac-marka-modeli/index.vue'),
         meta: { requiresAuth: true }
       },
       {
         path: '/arac-marka-modeli/yeni-olustur',
-        name: 'AracMarkaModelCreate',
-        component: () => import('../pages/arac-marka-modeli/AracMarkaModelCreate.vue'),
+        name: 'Araç Marka Modeli Oluştur',
+        component: () => import('../pages/arac-marka-modeli/Create.vue'),
+        meta: { requiresAuth: true }
+      },
+      {
+        path: '/arac-marka-modeli/duzenle/:id',
+        name: 'Araç Marka Modeli Düzenle',
+        component: () => import('../pages/arac-marka-modeli/Update.vue'),
         meta: { requiresAuth: true }
       },
       {
         path: '/beyin-markalar',
         name: 'Beyin Markalar',
-        component: () => import('../pages/beyin-markalar/BeyinMarkalar.vue'),
+        component: () => import('../pages/beyin-markalar/index.vue'),
         meta: { requiresAuth: true }
       },
       {
         path: '/beyin-markalar/yeni-olustur',
-        name: 'BeyinMarkalarCreate',
-        component: () => import('../pages/beyin-markalar/BeyinMarkalarCreate.vue'),
+        name: 'Beyin Marka Oluştur',
+        component: () => import('../pages/beyin-markalar/Create.vue'),
+        meta: { requiresAuth: true }
+      },
+      {
+        path: '/beyin-markalar/duzenle/:id',
+        name: 'Beyin Marka Düzenle',
+        component: () => import('../pages/beyin-markalar/Update.vue'),
         meta: { requiresAuth: true }
       },
       {
         path: '/cihaz-turu',
         name: 'Cihaz Türü',
-        component: () => import('../pages/cihaz-turu/CihazTuru.vue'),
+        component: () => import('../pages/cihaz-turu/index.vue'),
         meta: { requiresAuth: true }
       },
       {
         path: '/cihaz-turu/yeni-olustur',
-        name: 'CihazTuruCreate',
-        component: () => import('../pages/cihaz-turu/CihazTuruCreate.vue'),
+        name: 'Cihaz Türü Oluştur',
+        component: () => import('../pages/cihaz-turu/Create.vue'),
+        meta: { requiresAuth: true }
+      },
+      {
+        path: '/cihaz-turu/duzenle/:id',
+        name: 'Cihaz Türü Düzenle',
+        component: () => import('../pages/cihaz-turu/Update.vue'),
         meta: { requiresAuth: true }
       },
       {
         path: '/ozellikler',
         name: 'Özellikler',
-        component: () => import('../pages/ozellikler/Ozellikler.vue'),
+        component: () => import('../pages/ozellikler/index.vue'),
         meta: { requiresAuth: true }
       },
       {
         path: '/ozellikler/yeni-olustur',
-        name: 'OzelliklerCreate',
-        component: () => import('../pages/ozellikler/OzelliklerCreate.vue'),
+        name: 'Özellik Oluştur',
+        component: () => import('../pages/ozellikler/Create.vue'),
+        meta: { requiresAuth: true }
+      },
+      {
+        path: '/ozellikler/duzenle/:id',
+        name: 'Özellik Düzenle',
+        component: () => import('../pages/ozellikler/Update.vue'),
         meta: { requiresAuth: true }
       },
       {
         path: '/uygulama-sekli',
         name: 'Uygulama Şekli',
-        component: () => import('../pages/uygulama-sekli/UygulamaSekli.vue'),
+        component: () => import('../pages/uygulama-sekli/index.vue'),
         meta: { requiresAuth: true }
       },
       {
         path: '/uygulama-sekli/yeni-olustur',
-        name: 'UygulamaSekliCreate',
-        component: () => import('../pages/uygulama-sekli/UygulamaSekliCreate.vue'),
+        name: 'Uygulama Şekli Oluştur',
+        component: () => import('../pages/uygulama-sekli/Create.vue'),
+        meta: { requiresAuth: true }
+      },
+      {
+        path: '/uygulama-sekli/duzenle/:id',
+        name: 'Uygulama Şekli Düzenle',
+        component: () => import('../pages/uygulama-sekli/Update.vue'),
         meta: { requiresAuth: true }
       },
       {
         path: '/vites-tipi',
         name: 'Vites Tipi',
-        component: () => import('../pages/vites-tipi/VitesTip.vue'),
+        component: () => import('../pages/vites-tipi/index.vue'),
         meta: { requiresAuth: true }
       },
       {
         path: '/vites-tipi/yeni-olustur',
-        name: 'VitesTipiCreate',
-        component: () => import('../pages/vites-tipi/VitesTipCreate.vue'),
+        name: 'Vites Tipi Oluştur',
+        component: () => import('../pages/vites-tipi/Create.vue'),
+        meta: { requiresAuth: true }
+      },
+      {
+        path: '/vites-tipi/duzenle/:id',
+        name: 'Vites Tipi Düzenle',
+        component: () => import('../pages/vites-tipi/Update.vue'),
         meta: { requiresAuth: true }
       },
       {
         path: '/yakit-turu',
-        name: 'Yakıt Turu',
-        component: () => import('../pages/yakit-turu/YakitTuru.vue'),
+        name: 'Yakıt Türü',
+        component: () => import('../pages/yakit-turu/index.vue'),
         meta: { requiresAuth: true }
       },
       {
         path: '/yakit-turu/yeni-olustur',
-        name: 'YakitTuruCreate',
-        component: () => import('../pages/yakit-turu/YakitTuruCreate.vue'),
+        name: 'Yakıt Türü Oluştur',
+        component: () => import('../pages/yakit-turu/Create.vue'),
+        meta: { requiresAuth: true }
+      },
+      {
+        path: '/yakit-turu/duzenle/:id',
+        name: 'Yakıt Türü Düzenle',
+        component: () => import('../pages/yakit-turu/Update.vue'),
         meta: { requiresAuth: true }
       },
       {
         path: '/hesap-hareketleri',
         name: 'Hesap Hareketleri',
-        component: () => import('../pages/hesap-hareketleri/HesapHareketleri.vue'),
+        component: () => import('../pages/hesap-hareketleri/index.vue'),
         meta: { requiresAuth: true }
       },
       {
         path: '/hesap-hareketleri/yeni-olustur',
-        name: 'HesapHareketleriCreate',
-        component: () => import('../pages/hesap-hareketleri/HesapHareketleriCreate.vue'),
+        name: 'Hesap Hareketleri Oluştur',
+        component: () => import('../pages/hesap-hareketleri/Create.vue'),
         meta: { requiresAuth: true }
       },
       {
         path: '/faturalar',
         name: 'Faturalar',
-        component: () => import('../pages/faturalar/Faturalar.vue'),
+        component: () => import('../pages/faturalar/index.vue'),
         meta: { requiresAuth: true }
       },
       {
         path: '/faturalar/yeni-olustur',
-        name: 'FaturalarCreate',
-        component: () => import('../pages/faturalar/FaturalarCreate.vue'),
+        name: 'Fatura Oluştur',
+        component: () => import('../pages/faturalar/Create.vue'),
+        meta: { requiresAuth: true }
+      },
+      {
+        path: '/faturalar/duzenle/:id',
+        name: 'Fatura Düzenle',
+        component: () => import('../pages/faturalar/Update.vue'),
         meta: { requiresAuth: true }
       },
       {
         path: '/ayarlar',
         name: 'Ayarlar',
-        component: () => import('../pages/ayarlar/Ayarlar.vue'),
+        component: () => import('../pages/ayarlar/index.vue'),
         meta: { requiresAuth: true }
       },
     ]
   },
   {
     path: '/login',
-    name: 'Login',
+    name: 'Giriş',
     component: () => import('../pages/Login.vue'),
     meta: { layout: 'auth' }
   },

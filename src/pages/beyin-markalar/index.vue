@@ -13,6 +13,7 @@ import TableComponent from "@/components/TableComponent.vue";
 const tableInfo = ref({
   tableName: "beyin_markalar",
   create: "beyin-markalar",
+  update: "beyin-markalar",
   display_name: "Beyin Markalar",
 });
 

@@ -11,9 +11,10 @@ import { ref } from "vue";
 import TableComponent from "@/components/TableComponent.vue";
 
 const tableInfo = ref({
-  tableName: "vites_tip",
-  create: "vites-tipi",
-  display_name: "Vites Tipi",
+  tableName: "ozellikler",
+  create: "ozellikler",
+  update: "ozellikler",
+  display_name: "Özellikler",
 });
 
 const settings = ref({

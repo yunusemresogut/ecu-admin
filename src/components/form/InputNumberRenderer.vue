@@ -17,9 +17,7 @@ defineProps({
 function onInput(event) {
   const val = event.target.value
   const numVal = event.target.valueAsNumber
-  // Eğer boşsa veya geçersizse null gönder
   if (val === '') {
-    // boş bırakıldığında null veya ''
     emitUpdate(null)
   } else if (isNaN(numVal)) {
     emitUpdate(null)
@@ -29,7 +27,6 @@ function onInput(event) {
 }
 
 function emitUpdate(value) {
-  // emit update:modelValue
   emit("update:modelValue", value)
 }
 
@@ -37,14 +34,12 @@ const emit = defineEmits(["update:modelValue"])
 </script>
 
 <style>
-/* Chrome, Safari, Edge, Opera için spinner kaldır */
 input.no-spinner::-webkit-outer-spin-button,
 input.no-spinner::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
 
-/* Firefox için */
 input.no-spinner[type=number] {
   -moz-appearance: textfield;
   -webkit-appearance: none;

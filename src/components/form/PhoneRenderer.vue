@@ -21,13 +21,12 @@ const props = defineProps({
 const emit = defineEmits(['update:modelValue'])
 
 const inputRef = ref(null)
-const rawValue = ref('') // sadece rakamlar, başında 0 ile
+const rawValue = ref('')
 
 watch(() => props.modelValue, (val) => {
   if (!val) {
     rawValue.value = ''
   } else {
-    // Gelen value formatlıysa bile rakam-only versiyonunu rawValue yap
     rawValue.value = val.replace(/\D/g, '')
   }
 }, { immediate: true })
@@ -66,18 +65,14 @@ function onFocus() {
 function onInput(e) {
   let val = e.target.value
 
-  // Sadece rakam al
   val = val.replace(/\D/g, '')
 
-  // Eğer boşsa boş bırak, değilse 0 ile başlat
   if (val !== '' && !val.startsWith('0')) val = '0' + val
 
-  // Maks 11 hane
   val = val.slice(0, 11)
 
   rawValue.value = val
 
-  // Dışarıya formatlı hali emit et
   emit('update:modelValue', formatNumber(val))
 
   nextTick(() => {

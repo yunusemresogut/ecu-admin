@@ -11,12 +11,15 @@ import { ref } from "vue";
 import TableComponent from "@/components/TableComponent.vue";
 
 const tableInfo = ref({
-  tableName: "settings",
-  create: "Ayarlar",
-  display_name: "Ayarlar",
+  tableName: "cihaz_türü",
+  create: "cihaz-turu",
+  update: "cihaz-turu",
+  display_name: "Cihaz Türü",
 });
 
 const settings = ref({
+  showCreateButton: true,
   showActions: true,
+  showEditButton: true,
 })
 </script>

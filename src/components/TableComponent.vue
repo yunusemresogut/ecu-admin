@@ -20,19 +20,39 @@
         />
       </svg>
       <h2 class="text-lg font-semibold">Kayıt bulunamadı</h2>
-      <p class="mt-2 text-sm text-gray-400">Şu anda görüntülenecek bir veri yok.</p>
+      <p class="mt-2 text-sm text-gray-400">
+        Şu anda görüntülenecek bir veri yok.
+      </p>
     </div>
 
     <div v-else class="space-y-6 p-6 min-h-screen">
       <!-- Üst Başlık -->
       <div class="flex items-center justify-between">
-        <h2 class="text-2xl font-semibold text-gray-800">{{ tableInfo.display_name }}</h2>
+        <h2 class="text-2xl font-semibold text-gray-800">
+          {{ tableInfo.display_name }}
+        </h2>
         <RouterLink
           v-if="settings?.showCreateButton"
           :to="props.tableInfo.create + '/yeni-olustur'"
           class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition flex items-center gap-2"
-          ><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus-icon lucide-plus"><path d="M5 12h14"/><path d="M12 5v14"/></svg>Yeni</RouterLink
         >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="lucide lucide-plus-icon lucide-plus"
+          >
+            <path d="M5 12h14" />
+            <path d="M12 5v14" />
+          </svg>
+          Yeni
+        </RouterLink>
       </div>
 
       <!-- Arama ve Filtre -->
@@ -62,12 +82,25 @@
                 <span v-if="params.sorts[col.name] === true">▲</span>
                 <span v-else-if="params.sorts[col.name] === false">▼</span>
               </th>
-              <th v-if="settings?.showActions" class="px-6 py-3 font-bold text-center">İşlemler</th>
+              <th
+                v-if="settings?.showActions"
+                class="px-6 py-3 font-bold text-center w-32"
+              >
+                İşlemler
+              </th>
             </tr>
           </thead>
           <tbody class="divide-y divide-gray-200 text-sm text-gray-800">
-            <tr v-for="(item, i) in results.records" :key="i" class="hover:bg-gray-100 odd:bg-white even:bg-gray-50">
-              <td v-for="col in visibleColumns" :key="col.name" class="px-6 py-4 max-w-[300px] text-nowrap truncate">
+            <tr
+              v-for="(item, i) in results.records"
+              :key="i"
+              class="hover:bg-gray-100 odd:bg-white even:bg-gray-50"
+            >
+              <td
+                v-for="col in visibleColumns"
+                :key="col.name"
+                class="px-6 py-4 max-w-[300px] text-nowrap truncate"
+              >
                 <component
                   :is="getColumnComponent(col.gui_type_name)"
                   :value="item[col.name]"
@@ -75,7 +108,10 @@
                   :column="col.name"
                 />
               </td>
-              <td v-if="settings?.showActions" class="px-6 py-4 flex items-center justify-end gap-2">
+              <td
+                v-if="settings?.showActions"
+                class="px-6 py-4 flex items-center justify-center gap-2"
+              >
                 <RouterLink
                   v-if="settings?.showEditButton"
                   :to="props.tableInfo.update + '/duzenle/' + item.id"
@@ -93,10 +129,14 @@
                     stroke-linejoin="round"
                     class="lucide lucide-square-pen-icon lucide-square-pen"
                   >
-                    <path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                    <path
+                      d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"
+                    />
                     <path
                       d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"
-                    /></svg>Düzenle
+                    />
+                  </svg>
+                  Düzenle
                 </RouterLink>
 
                 <button
@@ -120,7 +160,9 @@
                     <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
                     <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
                     <line x1="10" x2="10" y1="11" y2="17" />
-                    <line x1="14" x2="14" y1="11" y2="17" /></svg>Sil
+                    <line x1="14" x2="14" y1="11" y2="17" />
+                  </svg>
+                  Sil
                 </button>
               </td>
             </tr>
@@ -154,7 +196,9 @@
           >
             ‹
           </button>
-          <span class="text-sm text-gray-600"> {{ params.page }} / {{ totalPages }} </span>
+          <span class="text-sm text-gray-600">
+            {{ params.page }} / {{ totalPages }}
+          </span>
           <button
             class="px-3 py-1 border rounded text-sm text-gray-700 hover:bg-gray-100"
             :disabled="params.page >= totalPages"
@@ -213,16 +257,21 @@ const totalPages = computed(() => {
 
 const getData = async () => {
   loading.value = true;
-  params.value.column_array_id = authStore.userData.auths.tables[props.tableInfo.tableName].lists[0];
-  params.value.column_array_id_query = authStore.userData.auths.tables[props.tableInfo.tableName]?.lists?.[0];
+  params.value.column_array_id =
+    authStore.userData.auths.tables[props.tableInfo.tableName].lists[0];
+  params.value.column_array_id_query =
+    authStore.userData.auths.tables[props.tableInfo.tableName]?.lists?.[0];
   if (props.filters) {
     params.value.filters = props.filters;
   }
 
   try {
-    const response = await axios.post(`${authStore.token}/tables/${props.tableInfo.tableName}`, {
-      params: JSON.stringify(params.value),
-    });
+    const response = await axios.post(
+      `${authStore.token}/tables/${props.tableInfo.tableName}`,
+      {
+        params: JSON.stringify(params.value),
+      }
+    );
     results.value = response.data.data;
   } catch (error) {
     console.error(error);

@@ -18,63 +18,74 @@ const props = defineProps({
 })
 const emit = defineEmits(['update:modelValue'])
 
-const rawInput = ref('') // Kullanıcının yazdığı ham input
+const rawInput = ref('')
 
-// Model value geldikçe inputu güncelle
-watch(() => props.modelValue, (val) => {
-  if (val === undefined || val === null || val === '') {
-    rawInput.value = ''
-    return
-  }
-  const strVal = val.toString()
-
-  // Backend'den gelen: 123456789.99
-  // Bunu kullanıcıya formatlı gösterim için çevir
-  rawInput.value = toDisplayFormat(strVal)
-})
-
-// Backend tarzı sayıyı (nokta ondalık, virgül yok) -> "123.456.789,99" formata çevir
 function toDisplayFormat(val) {
-  if (!val) return ''
+  if (!val && val !== 0) return ''
 
-  let [whole, decimal] = val.split('.')
+  const str = val.toString()
+  let [whole, decimal] = str.split('.')
 
-  // Binlik ayraç ekle
   whole = whole.replace(/\B(?=(\d{3})+(?!\d))/g, '.')
 
   if (decimal) {
-    decimal = decimal.slice(0, 2)
-    return whole + ',' + decimal
-  } else {
-    return whole
-  }
+  decimal = decimal.padEnd(2, '0').slice(0, 2)
+  return whole + ',' + decimal
+} else {
+  return whole + ',00'
+}
 }
 
-// Kullanıcının yazdığı inputu işleyip emit et
 function handleInput(e) {
-  let val = e.target.value
+  const el = e.target
+  const oldRaw = rawInput.value
+  const oldCursor = el.selectionStart
 
-  // Kullanıcıdan sadece rakam, nokta, virgül kabul et
-  val = val.replace(/[^\d.,]/g, '')
+  let inputVal = el.value.replace(/[^\d.,]/g, '')
 
-  // Virgül sadece 1 tane olabilir, fazlasını kaldır
-  const parts = val.split(',')
+  const parts = inputVal.split(',')
   if (parts.length > 2) {
-    val = parts[0] + ',' + parts.slice(1).join('')
+    inputVal = parts[0] + ',' + parts.slice(1).join('')
   }
 
-  // Şimdi bu val'i backend için düz sayıya çevirelim:
-  // 1) Noktaları kaldır
-  // 2) Virgülü noktaya çevir (ondalık ayraç)
-  let backendVal = val.replace(/\./g, '').replace(',', '.')
+  const backendVal = inputVal.replace(/\./g, '').replace(',', '.')
 
-  // Backend'e sayısal string gönder (ör: "123456789.99")
+  const display = toDisplayFormat(backendVal)
+
+  let newCursor = oldCursor
+
+  const oldDotsBeforeCursor = (oldRaw.slice(0, oldCursor).match(/\./g) || []).length
+  const newDotsBeforeCursor = (display.slice(0, newCursor).match(/\./g) || []).length
+
+  const dotDiff = newDotsBeforeCursor - oldDotsBeforeCursor
+  newCursor += dotDiff
+
   emit('update:modelValue', backendVal)
 
-  // Kullanıcıya gösterim için formatlayıp göster
-  rawInput.value = toDisplayFormat(backendVal)
+  requestAnimationFrame(() => {
+    rawInput.value = display
+    requestAnimationFrame(() => {
+      try {
+        el.setSelectionRange(newCursor, newCursor)
+      } catch (err) {
+        // Bazı edge-case'lerde sorun çıkarsa caret ayarlanmasın
+      }
+    })
+  })
 }
 
-// Gösterilecek değer, rawInput değişince güncellenir
+watch(
+  () => props.modelValue,
+  (val) => {
+    if (val !== undefined && val !== null && val !== '') {
+      rawInput.value = toDisplayFormat(val)
+    } else {
+      rawInput.value = ''
+    }
+  },
+  { immediate: true }
+)
+
 const displayValue = computed(() => rawInput.value)
 </script>
+
