@@ -43,8 +43,8 @@ const params = ref({
   limit: 20,
   sorts: {},
   filters: {},
-  column_array_id: authStore.userData.auths.tables['settings'].lists[0],
-  column_array_id_query: authStore.userData.auths.tables['settings']?.lists?.[0],
+  column_array_id: authStore.userDataAdmin.auths.tables['settings'].lists[0],
+  column_array_id_query: authStore.userDataAdmin.auths.tables['settings']?.lists?.[0],
 })
 
 onMounted(async () => {
@@ -67,7 +67,7 @@ onMounted(async () => {
 const updateSetting = async (setting) => {
   const payload = {
     value: setting.value,
-    column_set_id: authStore.userData.auths.tables['settings']?.edits?.[0],
+    column_set_id: authStore.userDataAdmin.auths.tables['settings']?.edits?.[0],
     id: setting.id,
     in_form_column_name: 'value',
     single_column: 'value',

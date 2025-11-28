@@ -12,14 +12,15 @@ import TableComponent from "@/components/TableComponent.vue";
 
 const tableInfo = ref({
   tableName: "users",
-  create: "bayiler",
-  update: "bayiler",
-  display_name: "Bayiler",
+  create: "kullanicilar",
+  update: "kullanicilar",
+  display_name: "Kullanıcılar",
 });
 
 const settings = ref({
   showCreateButton: true,
   showActions: true,
   showEditButton: true,
+  showGraphButton: true,
 })
 </script>

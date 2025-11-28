@@ -21,5 +21,6 @@ const settings = ref({
   showCreateButton: true,
   showActions: true,
   showEditButton: true,
+  showDeleteButton: true,
 })
 </script>

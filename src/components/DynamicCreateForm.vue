@@ -2,7 +2,9 @@
   <div class="p-4">
     <LoadingComponent v-if="loading" />
     <div v-else>
-      <h1 class="text-2xl font-bold mb-4">{{ tableInfo.display_name || "Form" }} Oluştur</h1>
+      <h1 class="text-2xl font-bold mb-4">
+        {{ tableInfo.display_name || "Form" }} Oluştur
+      </h1>
       <form @submit.prevent="handleSubmit">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div v-for="(col, index) in columns" :key="index">
@@ -23,7 +25,10 @@
               }"
             />
 
-            <ul v-if="formErrors[col.name]" class="flex flex-wrap gap-x-2 text-sm text-red-600 mt-1">
+            <ul
+              v-if="formErrors[col.name]"
+              class="flex flex-wrap gap-x-2 text-sm text-red-600 mt-1"
+            >
               <li
                 v-for="(err, idx) in formErrors[col.name]"
                 :key="idx"
@@ -36,7 +41,10 @@
         </div>
 
         <div class="flex justify-end">
-          <button type="submit" class="mt-6 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+          <button
+            type="submit"
+            class="mt-6 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          >
             Kaydet
           </button>
         </div>
@@ -52,10 +60,13 @@ import formComponents from "@/components/form";
 import { useAuthStore } from "@/stores/auth";
 import LoadingComponent from "./LoadingComponent.vue";
 import { useToast } from "vue-toastification";
+import { useRoute, useRouter } from "vue-router";
 
 const toast = useToast();
 const authStore = useAuthStore();
 const props = defineProps(["tableName"]);
+const route = useRoute();
+const router = useRouter();
 
 const tableName = props.tableName || "default_table_name";
 const columns = ref([]);
@@ -68,43 +79,54 @@ const getDatas = async () => {
   try {
     loading.value = true;
     let params = {
-      column_set_id: authStore.userData.auths.tables[tableName].creates[0],
+      column_set_id: authStore.userDataAdmin.auths.tables[tableName].creates[0],
     };
 
-    const res = await axios.post(`${authStore.token}/tables/${tableName}/create`, {
-      params: JSON.stringify(params),
-    });
+    const res = await axios.post(
+      `${authStore.token}/tables/${tableName}/create`,
+      {
+        params: JSON.stringify(params),
+      }
+    );
     tableInfo.value = res.data?.data?.table_info;
-    const rawColumns = res.data?.data?.column_set?.column_arrays?.[0]?.columns || {};
+    const rawColumns =
+      res.data?.data?.column_set?.column_arrays?.[0]?.columns || {};
 
     const loadedColumns = await Promise.all(
-  Object.entries(rawColumns).map(async ([key, col]) => {
-    formData.value[col.name] = getInitialValue(col.gui_type_name);
-    
-    if (["select", "select:static", "multiselect", "multiselect:static"].includes(col.gui_type_name)) {
-      let formData = new FormData();
-      formData.append("search", "***");
-      formData.append("limit", "2000");
-      try {
-        const selectRes = await axios.post(
-          `${authStore.token}/tables/${tableName}/getSelectColumnData/${col.name}`,
-          formData
-        );
+      Object.entries(rawColumns).map(async ([key, col]) => {
+        formData.value[col.name] = getInitialValue(col.gui_type_name);
 
-        const results = selectRes.data?.results || [];
-        col.options = results.map((item) => ({
-          label: item.text,
-          value: item.id,
-        }));
-      } catch (err) {
-        console.warn(`Select verisi alınamadı: ${col.name}`, err);
-        col.options = [];
-      }
-    }
+        if (
+          [
+            "select",
+            "select:static",
+            "multiselect",
+            "multiselect:static",
+          ].includes(col.gui_type_name)
+        ) {
+          let formData = new FormData();
+          formData.append("search", "***");
+          formData.append("limit", "3000");
+          try {
+            const selectRes = await axios.post(
+              `${authStore.token}/tables/${tableName}/getSelectColumnData/${col.name}`,
+              formData
+            );
 
-    return col;
-  })
-);
+            const results = selectRes.data?.results || [];
+            col.options = results.map((item) => ({
+              label: item.text,
+              value: item.id,
+            }));
+          } catch (err) {
+            console.warn(`Select verisi alınamadı: ${col.name}`, err);
+            col.options = [];
+          }
+        }
+
+        return col;
+      })
+    );
 
     columns.value = loadedColumns;
   } catch (error) {
@@ -129,22 +151,29 @@ const handleSubmit = async () => {
   try {
     formErrors.value = {}; // önceki hataları temizle
 
+    console.log(formData.value);
     const formDatas = new FormData();
     for (const [key, value] of Object.entries(formData.value)) {
       if (value !== undefined && value !== null) {
         if (Array.isArray(value)) {
-          value.forEach((item) => formDatas.append(key, item));
+          formDatas.append(key, JSON.stringify(value));
         } else {
           formDatas.append(key, value);
         }
       }
     }
 
-    formDatas.append("column_set_id", authStore.userData.auths.tables[tableName].creates[0]);
+    formDatas.append(
+      "column_set_id",
+      authStore.userDataAdmin.auths.tables[tableName].creates[0]
+    );
 
     console.log(formDatas);
 
-    const response = await axios.post(`${authStore.token}/tables/${tableName}/store`, formDatas);
+    const response = await axios.post(
+      `${authStore.token}/tables/${tableName}/store`,
+      formDatas
+    );
 
     if (response?.data?.data?.errors) {
       formErrors.value = response.data.data.errors;
@@ -154,12 +183,18 @@ const handleSubmit = async () => {
 
     toast.success("Form başarıyla kaydedildi!");
 
-    const currentPath = route.path
-    const parts = currentPath.split("/")
-    const tn = parts[1]
+    const currentPath = route.path;
+    const parts = currentPath.split("/");
+    const tn = parts[1];
 
-    router.push(`/${tn}`)
+    router.push(`/${tn}`);
   } catch (error) {
+    if (error.status === 500) {
+      toast.error("Veritabanı ya da sunucu hatası oluştu. Lütfen daha sonra tekrar deneyin.");
+      return;
+    } else {
+      toast.error("Bilinmeyen bir hata oluştu.");
+    }
     console.error(error);
   }
 };

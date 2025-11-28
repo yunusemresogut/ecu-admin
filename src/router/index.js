@@ -31,20 +31,20 @@ const routes = [
         meta: { requiresAuth: true }
       },
       {
-        path: '/bayiler',
-        name: 'Bayiler',
+        path: '/kullanicilar',
+        name: 'Kullanıcılar',
         component: () => import('../pages/bayiler/index.vue'),
         meta: { requiresAuth: true }
       },
       {
-        path: '/bayiler/yeni-olustur',
-        name: 'Bayi Oluştur',
+        path: '/kullanicilar/yeni-olustur',
+        name: 'Kullanıcı Oluştur',
         component: () => import('../pages/bayiler/Create.vue'),
         meta: { requiresAuth: true }
       },
       {
-        path: '/bayiler/duzenle/:id',
-        name: 'Bayi Düzenle',
+        path: '/kullanicilar/duzenle/:id',
+        name: 'Kullanıcı Düzenle',
         component: () => import('../pages/bayiler/Update.vue'),
         meta: { requiresAuth: true }
       },
@@ -118,6 +118,24 @@ const routes = [
         path: '/ozellikler/duzenle/:id',
         name: 'Özellik Düzenle',
         component: () => import('../pages/ozellikler/Update.vue'),
+        meta: { requiresAuth: true }
+      },
+      {
+        path: '/gruplar',
+        name: 'Gruplar',
+        component: () => import('../pages/gruplar/index.vue'),
+        meta: { requiresAuth: true }
+      },
+      {
+        path: '/gruplar/yeni-olustur',
+        name: 'Grup Oluştur',
+        component: () => import('../pages/gruplar/Create.vue'),
+        meta: { requiresAuth: true }
+      },
+      {
+        path: '/gruplar/duzenle/:id',
+        name: 'Grup Düzenle',
+        component: () => import('../pages/gruplar/Update.vue'),
         meta: { requiresAuth: true }
       },
       {
@@ -205,11 +223,71 @@ const routes = [
         meta: { requiresAuth: true }
       },
       {
+        path: '/blog',
+        name: 'Blog',
+        component: () => import('../pages/blog/index.vue'),
+        meta: { requiresAuth: true }
+      },
+      {
+        path: '/blog/yeni-olustur',
+        name: 'Blog Oluştur',
+        component: () => import('../pages/blog/Create.vue'),
+        meta: { requiresAuth: true }
+      },
+      {
+        path: '/blog/duzenle/:id',
+        name: 'Blog Düzenle',
+        component: () => import('../pages/blog/Update.vue'),
+        meta: { requiresAuth: true }
+      },
+      {
+        path: '/destek',
+        name: 'Destek',
+        component: () => import('../pages/Tickets.vue'),
+        meta: { requiresAuth: true }
+      },
+       {
+        path: '/iletisim',
+        name: 'İletişim',
+        component: () => import('../pages/Contact.vue'),
+        meta: { requiresAuth: true }
+      },
+      {
         path: '/ayarlar',
         name: 'Ayarlar',
         component: () => import('../pages/ayarlar/index.vue'),
         meta: { requiresAuth: true }
       },
+      {
+        path: '/fiyat-araliklari',
+        name: 'Fiyat Aralıkları',
+        component: () => import('../pages/ozellikler/OzellikFiyat.vue'),
+        meta: { requiresAuth: true }
+      },
+      {
+        path: '/kullanici-hedefleri',
+        name: 'Kullanıcı Hedefleri',
+        component: () => import('../pages/kullanici-hedefleri/index.vue'),
+        meta: { requiresAuth: true }
+      },
+      {
+        path: '/kullanici-hedefleri/yeni-olustur',
+        name: 'Kullanıcı Hedefleri Oluştur',
+        component: () => import('../pages/kullanici-hedefleri/Create.vue'),
+        meta: { requiresAuth: true }
+      },
+      {
+        path: '/kullanici-hedefleri/duzenle/:id',
+        name: 'Kullanıcı Hedefleri Düzenle',
+        component: () => import('../pages/kullanici-hedefleri/Update.vue'),
+        meta: { requiresAuth: true }
+      },
+      // {
+      //   path: '/performans-modulleri',
+      //   name: 'Performans Modülleri',
+      //   component: () => import('../pages/Performans.vue'),
+      //   meta: { requiresAuth: true }
+      // },
     ]
   },
   {
@@ -252,7 +330,7 @@ router.beforeEach((to, from, next) => {
 })
 
 router.beforeEach(async (to, from, next) => {
-  document.title = (to.meta.breadcrumb || to.name) + ' - KAF'
+  document.title = (to.meta.breadcrumb || to.name) + ' - Ecusave'
 
   const authStore = useAuthStore()
 
@@ -262,13 +340,13 @@ router.beforeEach(async (to, from, next) => {
     if (!isAuthenticated) {
       next({ name: 'Login' })
     } else {
-      if (authStore.userData) {
+      if (authStore.userDataAdmin) {
         next()
       } else {
         try {
           const userRes = await axios.post(`${authStore.token}/getLoggedInUserInfo`)
-          authStore.userData = userRes.data.data
-          localStorage.setItem('userData', JSON.stringify(authStore.userData))
+          authStore.userDataAdmin = userRes.data.data
+          localStorage.setItem('userDataAdmin', JSON.stringify(authStore.userDataAdmin))
           next()
         } catch (error) {
           console.error('Kullanıcı verisi alınamadı:', error)

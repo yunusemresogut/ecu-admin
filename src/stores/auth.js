@@ -4,7 +4,7 @@ import axios from 'axios'
 export const useAuthStore = defineStore('auth', {
   state: () => ({
     token: localStorage.getItem('userToken') || null,
-    userData: JSON.parse(localStorage.getItem('userData')) || null,
+    userDataAdmin: JSON.parse(localStorage.getItem('userDataAdmin')) || null,
   }),
   actions: {
     async login(email, password) {
@@ -15,8 +15,8 @@ export const useAuthStore = defineStore('auth', {
         localStorage.setItem('userToken', this.token)
 
         const userRes = await axios.post(`${token}/getLoggedInUserInfo`)
-        this.userData = userRes.data.data
-        localStorage.setItem('userData', JSON.stringify(this.userData))
+        this.userDataAdmin = userRes.data.data
+        localStorage.setItem('userDataAdmin', JSON.stringify(this.userDataAdmin))
 
         return true
       } catch (err) {
@@ -26,9 +26,9 @@ export const useAuthStore = defineStore('auth', {
     },
     logout() {
       this.token = null
-      this.userData = null
+      this.userDataAdmin = null
       localStorage.removeItem('userToken')
-      localStorage.removeItem('userData')
+      localStorage.removeItem('userDataAdmin')
     }
   }
 })

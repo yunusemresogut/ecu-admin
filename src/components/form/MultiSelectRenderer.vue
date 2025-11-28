@@ -1,22 +1,19 @@
 <template>
-  <select
-    multiple
+  <Multiselect
     v-model="internalValue"
-    @change="onChange"
-    class="w-full border border-gray-300 rounded px-3 py-2"
-  >
-    <option
-      v-for="(option, i) in options"
-      :key="i"
-      :value="option.value ?? option"
-    >
-      {{ option.label ?? option }}
-    </option>
-  </select>
+    :options="options"
+    :multiple="true"
+    :close-on-select="false"
+    :track-by="'value'"
+    :label="'label'"
+    placeholder="Seçin"
+  />
 </template>
 
 <script setup>
-import { computed } from "vue"
+import { ref, watch } from "vue"
+import Multiselect from "vue-multiselect"
+import "vue-multiselect/dist/vue-multiselect.min.css"
 
 const props = defineProps({
   modelValue: {
@@ -28,15 +25,30 @@ const props = defineProps({
     default: () => []
   }
 })
+
 const emit = defineEmits(["update:modelValue"])
 
-const internalValue = computed({
-  get: () => props.modelValue,
-  set: (val) => emit("update:modelValue", val)
-})
+const internalValue = ref([])
 
-const onChange = (e) => {
-  const selected = Array.from(e.target.selectedOptions).map(opt => opt.value)
-  emit("update:modelValue", selected)
-}
+watch(
+  () => props.modelValue,
+  (newVal) => {
+    const valSet = new Set(newVal.map(Number))
+    internalValue.value = props.options.filter(opt => valSet.has(Number(opt.value)))
+  },
+  { immediate: true }
+)
+
+watch(
+  internalValue,
+  (val, oldVal) => {
+    const onlyValues = val.map((item) => Number(item.value))
+    const oldValues = oldVal?.map((item) => Number(item.value)) || []
+
+    if (JSON.stringify(onlyValues) !== JSON.stringify(oldValues)) {
+      emit("update:modelValue", onlyValues)
+    }
+  },
+  { deep: false }
+)
 </script>

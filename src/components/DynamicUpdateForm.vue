@@ -2,7 +2,9 @@
   <div class="p-4">
     <LoadingComponent v-if="loading" />
     <div v-else>
-      <h1 class="text-2xl font-bold mb-4">{{ tableInfo.display_name || "Form" }} Düzenle</h1>
+      <h1 class="text-2xl font-bold mb-4">
+        {{ tableInfo.display_name || "Form" }} Düzenle
+      </h1>
       <form @submit.prevent="handleSubmit">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div v-for="(col, index) in columns" :key="index">
@@ -23,7 +25,10 @@
               }"
             />
 
-            <ul v-if="formErrors[col.name]" class="flex flex-wrap gap-x-2 text-sm text-red-600 mt-1">
+            <ul
+              v-if="formErrors[col.name]"
+              class="flex flex-wrap gap-x-2 text-sm text-red-600 mt-1"
+            >
               <li
                 v-for="(err, idx) in formErrors[col.name]"
                 :key="idx"
@@ -36,7 +41,10 @@
         </div>
 
         <div class="flex justify-end">
-          <button type="submit" class="mt-6 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+          <button
+            type="submit"
+            class="mt-6 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          >
             Kaydet
           </button>
         </div>
@@ -68,21 +76,24 @@ const formData = ref({});
 const formErrors = ref({});
 const loading = ref(false);
 
-
 const getDatas = async () => {
   try {
     loading.value = true;
 
     const params = {
-      column_set_id: authStore.userData.auths.tables[tableName].edits[0],
+      column_set_id: authStore.userDataAdmin.auths.tables[tableName].edits[0],
     };
 
-    const res = await axios.post(`${authStore.token}/tables/${tableName}/${id}/edit`, {
-      params: JSON.stringify(params),
-    });
+    const res = await axios.post(
+      `${authStore.token}/tables/${tableName}/${id}/edit`,
+      {
+        params: JSON.stringify(params),
+      }
+    );
 
     tableInfo.value = res.data?.data?.table_info;
-    const rawColumns = res.data?.data?.column_set?.column_arrays?.[0]?.columns || {};
+    const rawColumns =
+      res.data?.data?.column_set?.column_arrays?.[0]?.columns || {};
     const record = res.data?.data?.record || {}; // <- record verisini aldık
 
     const loadedColumns = await Promise.all(
@@ -99,7 +110,9 @@ const getDatas = async () => {
             if (Array.isArray(val) && val[0]?.source !== undefined) {
               initial = val[0].source;
             }
-          } else if (["multiselect", "multiselect:static"].includes(col.gui_type_name)) {
+          } else if (
+            ["multiselect", "multiselect:static"].includes(col.gui_type_name)
+          ) {
             // val = [{ source: 1 }, { source: 2 }] gibi -> source'ları array olarak al
             if (Array.isArray(val)) {
               initial = val.map((item) => item.source ?? item);
@@ -113,7 +126,14 @@ const getDatas = async () => {
         formData.value[col.name] = initial;
 
         // 4. Eğer select tipi ise, options'ları çek
-        if (["select", "select:static", "multiselect", "multiselect:static"].includes(col.gui_type_name)) {
+        if (
+          [
+            "select",
+            "select:static",
+            "multiselect",
+            "multiselect:static",
+          ].includes(col.gui_type_name)
+        ) {
           let formDataObj = new FormData();
           formDataObj.append("search", "***");
           formDataObj.append("limit", "2000");
@@ -163,30 +183,60 @@ const handleSubmit = async () => {
     formErrors.value = {}; // önceki hataları temizle
 
     const formDatas = new FormData();
+
     for (const [key, value] of Object.entries(formData.value)) {
-      if (value !== undefined && value !== null) {
-        let processedValue = value;
+      if (value === undefined || value === null) continue;
 
-        // boolean/fastchange tipleri için kontrol
-        const col = columns.value.find((c) => c.name === key);
-        const isBoolean =
-          col?.gui_type_name === "boolean" || col?.gui_type_name === "boolean:fastchange";
+      const col = columns.value.find((c) => c.name === key);
 
-        if (isBoolean) {
-          processedValue = value === true || value === 1 || value === "1" ? 1 : 0;
-        }
+      // Dosya tipini özel olarak işle
+      if (col?.gui_type_name === "files") {
+        // value = { existing: [...], new: [...] }
+        console.log("Dosya Verisi:", value);
+        const oldFiles = value.existing || value || [];
+        const newFiles = value.new || [];
 
-        if (Array.isArray(processedValue)) {
-          processedValue.forEach((item) => formDatas.append(key, item));
+        console.log("Yeni Dosyalar:", newFiles);
+
+        // Mevcut dosyaları gönder (backend arac_dosyalar_old bekliyor)
+        console.log("Eski Dosyalar:", oldFiles);
+        if (newFiles.length === 0) {
+          formDatas.append(`${key}_old`, oldFiles);
         } else {
-          formDatas.append(key, processedValue);
+          newFiles.forEach((file) => {
+            formDatas.append(`${key}[]`, file); // binary dosya objesi
+          });
         }
+
+        continue; // diğer işlemlere geçme
+      }
+
+      // boolean/fastchange tipleri için kontrol
+      const isBoolean =
+        col?.gui_type_name === "boolean" ||
+        col?.gui_type_name === "boolean:fastchange";
+
+      let processedValue = value;
+      if (isBoolean) {
+        processedValue = value === true || value === 1 || value === "1" ? 1 : 0;
+      }
+
+      if (Array.isArray(processedValue)) {
+        formDatas.append(key, JSON.stringify(processedValue));
+      } else {
+        formDatas.append(key, processedValue);
       }
     }
 
-    formDatas.append("column_set_id", authStore.userData.auths.tables[tableName].creates[0]);
+    formDatas.append(
+      "column_set_id",
+      authStore.userDataAdmin.auths.tables[tableName].edits[0]
+    );
 
-    const response = await axios.post(`${authStore.token}/tables/${tableName}/${id}/update`, formDatas);
+    const response = await axios.post(
+      `${authStore.token}/tables/${tableName}/${id}/update`,
+      formDatas
+    );
 
     if (response?.data?.data?.errors) {
       formErrors.value = response.data.data.errors;
@@ -195,16 +245,20 @@ const handleSubmit = async () => {
     }
 
     toast.success("Form başarıyla kaydedildi!");
-    const currentPath = route.path // örnek: "/bayiler/duzenle/96"
-    const parts = currentPath.split("/") // ["", "bayiler", "duzenle", "96"]
-    const tn = parts[1] // "bayiler"
-
-    router.push(`/${tn}`)
+    const currentPath = route.path;
+    const parts = currentPath.split("/");
+    const tn = parts[1];
+    router.push(`/${tn}`);
   } catch (error) {
+    if (error.status === 500) {
+      toast.error("Veritabanı ya da sunucu hatası oluştu. Lütfen daha sonra tekrar deneyin.");
+      return;
+    } else {
+      toast.error("Bilinmeyen bir hata oluştu.");
+    }
     console.error(error);
   }
 };
-
 
 const getInputComponent = (type) => {
   switch (type) {

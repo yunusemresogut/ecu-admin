@@ -2,11 +2,10 @@
   <div class="space-y-8">
     <!-- Performans Modülleri -->
     <section>
-      <h2 class="text-3xl font-semibold mb-8 text-center">Performans Modülleri</h2>
-      <h2 class="text-lg mb-4 ps-4">Kısa Dönem Satış Raporu</h2>
+      <h2 class="text-2xl font-semibold mb-4">Performans Modülleri</h2>
       <LoadingComponent v-if="loading" />
 
-      <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2">
+      <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <div v-for="item in statCards" :key="item.key" class="card p-4 rounded-xl shadow bg-white">
           <div class="text-gray-500 text-lg">{{ item.label }}</div>
           <div class="text-2xl font-bold">{{ $formatCurrency(sonrapor[item.key]) }}</div>
@@ -99,10 +98,6 @@ const fetchChart = async (chart) => {
     ]
   } catch (err) {
     console.log(err)
-    if (err.response.data.data.message == 'fail.token') {
-      authStore.logout()
-      router.push('/login')
-    }
   } finally {
     chart.loading = false
   }
